@@ -16,6 +16,8 @@ app.get('/', (req, res) => {
     res.send('API da Biblioteca rodando!')
 });
 
+app.use('/api/authors', authorRoutes);
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
