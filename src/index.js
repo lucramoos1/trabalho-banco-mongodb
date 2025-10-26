@@ -4,6 +4,7 @@ const connectDB = require('./config/database');
 
 const authorRoutes = require('./routes/authorRoutes'); 
 const userRoutes = require('./routes/userRoutes.js');
+const bookRoutes = require('./routes/bookRoutes');
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ app.get('/', (req, res) => {
 app.use('/api/authors', authorRoutes);
 
 app.use('/api/users', userRoutes);
+
+app.use('/api/books', bookRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
