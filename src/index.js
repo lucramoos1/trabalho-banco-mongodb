@@ -1,7 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/database');
+
 const authorRoutes = require('./routes/authorRoutes'); 
+const userRoutes = require('./routes/userRoutes.js');
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/authors', authorRoutes);
+
+app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
