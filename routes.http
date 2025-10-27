@@ -1,0 +1,88 @@
+# Define a URL base da API
+@baseUrl = http://localhost:3000/api
+
+# ==================================
+# AUTORES
+# ==================================
+
+### (AUTH 1) Criar um Autor
+# @name authorId
+POST {{baseUrl}}/authors
+Content-Type: application/json
+
+{
+  "name": "J.R.R. Tolkien",
+  "birthDate": "1892-01-03T00:00:00.000Z",
+  "sex": "Male",
+  "writingGenre": "Fantasy"
+}
+
+### (AUTH 2) Listar todos os Autores
+GET {{baseUrl}}/authors
+
+# ==================================
+# USUÁRIOS
+# ==================================
+
+### (USER 1) Criar um Usuário
+# @name userId
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Maria Silva",
+  "birthDate": "1995-05-15T00:00:00.000Z",
+  "sex": "Female",
+  "address": "Rua das Flores, 123, Bairro Centro"
+}
+
+### (USER 2) Listar todos os Usuários
+GET {{baseUrl}}/users
+
+# ==================================
+# LIVROS
+# ==================================
+
+### (BOOK 1) Criar um Livro
+# @name bookId
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "title": "O Hobbit",
+  "synopsis": "Uma grande aventura de um pequeno herói.",
+  "year": 1937,
+  "author": "{{authorId}}" 
+}
+
+### (BOOK 2) Listar todos os Livros
+GET {{baseUrl}}/books
+
+# ==================================
+# EMPRÉSTIMOS
+# ==================================
+
+### (LOAN 1) Realizar Empréstimo
+POST {{baseUrl}}/loans
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "bookId": "{{bookId}}",
+  "loanDate": "2025-10-26",
+  "returnDate": "2025-11-10"
+}
+
+### (LOAN 2) Tentar emprestar o mesmo livro (deve falhar)
+POST {{baseUrl}}/loans
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "bookId": "{{bookId}}",
+  "loanDate": "2025-10-27",
+  "returnDate": "2025-11-12"
+}
+
+### (LOAN 3) Listar todos os Empréstimos
+GET {{baseUrl}}/loans
