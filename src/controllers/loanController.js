@@ -4,22 +4,22 @@ const Book = require('../models/Book');
 
 const createLoan = async (req, res) => {
   try {
-    const { user, book, loanDate, returnDate } = req.body;
+    const { userId, bookId, loanDate, returnDate } = req.body;
 
-    if (!user || !book || !loanDate || !returnDate) {
+    if (!userId || !bookId || !loanDate || !returnDate) {
       return res.status(400).json({ 
-        message: 'Campos obrigatórios: user (nome), book (título), loanDate, returnDate.' 
+        message: 'Campos obrigatórios: userId, bookId, loanDate, returnDate.' 
       });
     }
 
-    const userDoc = await User.findOne({ name: user });
+    const userDoc = await User.findById(userId);
     if (!userDoc) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
+      return res.status(404).json({ message: 'Usuário não encontrado. Verifique o userId.' });
     }
 
-    const bookDoc = await Book.findOne({ title: book });
+    const bookDoc = await Book.findById(bookId);
     if (!bookDoc) {
-      return res.status(404).json({ message: 'Livro não encontrado.' });
+      return res.status(404).json({ message: 'Livro não encontrado. Verifique o bookId.' });
     }
 
     if (!bookDoc.isAvailable) {
@@ -30,8 +30,8 @@ const createLoan = async (req, res) => {
     }
 
     const newLoan = new Loan({
-      user,
-      book,
+      user: userId,
+      book: bookId,
       loanDate,
       returnDate
     });
@@ -39,12 +39,17 @@ const createLoan = async (req, res) => {
 
     bookDoc.isAvailable = false;
     bookDoc.expectedReturnDate = new Date(returnDate); 
-
     await bookDoc.save(); 
 
     res.status(201).json(savedLoan);
 
   } catch (error) {
+    if (error.name === 'CastError') {
+       return res.status(400).json({ 
+          message: 'ID do usuário ou do livro em formato inválido.'
+        });
+    }
+
     if (error.name === 'ValidationError') {
         return res.status(400).json({ 
           message: 'Erro de validação.',
@@ -59,7 +64,11 @@ const createLoan = async (req, res) => {
 
 const getAllLoans = async (req, res) => {
   try {
-    const loans = await Loan.find().sort({ createdAt: -1 }); 
+    const loans = await Loan.find()
+      .populate('user', 'name address') 
+      .populate('book', 'title') 
+      .sort({ createdAt: -1 }); 
+
     res.status(200).json(loans);
 
   } catch (error) {
